@@ -1,25 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Header from "./components/Header";
+import NotesPage from "./pages/NotesPage";
+import FlashcardsPage from "./pages/FlashcardsPage";
 
-function App() {
+export default function App() {
+  // Dark mode with localStorage persistence
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem("darkMode");
+    return saved ? JSON.parse(saved) : false;
+  });
+
+  useEffect(() => {
+    if (darkMode) document.documentElement.classList.add("dark");
+    else document.documentElement.classList.remove("dark");
+    localStorage.setItem("darkMode", JSON.stringify(darkMode));
+  }, [darkMode]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <div className="min-h-screen bg-purple-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-500">
+        <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+        <main className="max-w-5xl mx-auto px-4 py-6">
+          <Routes>
+            <Route path="/" element={<NotesPage />} />
+            <Route path="/flashcards" element={<FlashcardsPage />} />
+          </Routes>
+        </main>
+      </div>
+    </BrowserRouter>
   );
 }
-
-export default App;
